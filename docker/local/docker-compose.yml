@@ -1,6 +1,6 @@
-version: "3.2"
+version: "3.7"
 services:
- redis:
+ redis-broker:
     image: "redis:alpine"
 
     command: redis-server
@@ -10,7 +10,7 @@ services:
      - "6379"
 
     volumes:
-     - $PWD/redis-data:/var/lib/redis
+     - ./redis-data:/var/lib/redis
 
     environment:
      - REDIS_REPLICATION_MODE=master
@@ -21,8 +21,8 @@ services:
     container_name: turbinia-server
 
     volumes:
-     - $PWD/evidence:/evidence
-     - $PWD/conf/:/etc/turbinia/
+     - ./evidence:/evidence
+     - ./conf/:/etc/turbinia/
 
     environment:
      - LC_ALL=C.UTF-8
@@ -36,8 +36,8 @@ services:
     privileged: true
     
     volumes:
-     - $PWD/evidence:/evidence
-     - $PWD/conf/:/etc/turbinia/
+     - ./evidence:/evidence
+     - ./conf/:/etc/turbinia/
       
     environment:
      - LC_ALL=C.UTF-8
@@ -52,8 +52,22 @@ services:
 #     privileged: true
 
 #     volumes:
-#      - $PWD/evidence:/evidence
-#      - $PWD/conf/:/etc/turbinia/
+#      - ./evidence:/evidence
+#      - ./conf/:/etc/turbinia/
+
+#     environment:
+#      - LC_ALL=C.UTF-8
+#      - LANG=C.UTF-8
+
+#  turbinia-worker3:
+#     #image: "turbinia-worker-dev" # Use this for local development and comment out below line
+#     image: "us-docker.pkg.dev/osdfir-registry/turbinia/release/turbinia-worker:latest" # Latest stable
+#     container_name: turbinia-worker3
+#     privileged: true
+
+#     volumes:
+#      - ./evidence:/evidence
+#      - ./conf/:/etc/turbinia/
 
 #     environment:
 #      - LC_ALL=C.UTF-8

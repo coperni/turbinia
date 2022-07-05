@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out k8s
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: turbinia-worker
+  name: turbinia-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      io.kompose.service: turbinia-worker
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out k8s
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: turbinia-worker
+    spec:
+      containers:
+        - env:
+            - name: LANG
+              value: C.UTF-8
+            - name: LC_ALL
+              value: C.UTF-8
+            # - name: TURBINIA_OUTPUT_DIR
+            #   value: "/evidence"
+          image: us-docker.pkg.dev/osdfir-registry/turbinia/release/turbinia-worker:latest
+          name: turbinia-worker
+          resources: {}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /etc/turbinia/
+              name: turbinia-server-conf
+            - mountPath: /data
+              name: evidence-pv-storage
+      restartPolicy: Always
+      volumes:
+        - name: turbinia-server-conf
+          configMap:
+            name: turbinia-conf
+        - name: evidence-pv-storage
+          persistentVolumeClaim:
+            claimName: evidence-pv-claim
+status: {}
+
